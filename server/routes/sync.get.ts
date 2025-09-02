@@ -1,5 +1,5 @@
 import { eventHandler } from "h3";
-import { syncSubscribers } from "utils/sync-subscribers";
+import { syncSubscribers } from "server/utils/sync-subscribers";
 
 export default eventHandler(async (event) => {
   await syncSubscribers();
