@@ -1,6 +1,8 @@
 import { eventHandler } from "h3";
+import { syncSubscribers } from "utils/sync-subscribers";
 
-export default eventHandler((event) => {
+export default eventHandler(async (event) => {
+  await syncSubscribers();
   return `
       <meta charset="utf-8">
       <h1>This is your brand new Nitro project 🚀 </h1>
