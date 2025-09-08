@@ -1,6 +1,3 @@
-import { batchRequest } from "./mailerlite";
-import { fetchAllCustomers } from "./outsavvy";
-
 export const fetchAllOptedInCustomers = async () => {
   const customers = await fetchAllCustomers();
   return customers
