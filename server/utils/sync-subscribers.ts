@@ -11,7 +11,7 @@ export const syncSubscribers = async () => {
   const customers = await fetchAllOptedInCustomers();
   const MAX_REQUESTS = 50;
 
-  const MAILERLITE_GROUP_ID = process.env.MAILERLITE_GROUP_ID;
+  const MAILERLITE_GROUP_ID = process.env.MAILERLITE_GROUP_ID ?? "";
   const subscribeRequests = customers.map(
     ({ customer_email, customer_first_name, customer_last_name }) => ({
       method: "POST",

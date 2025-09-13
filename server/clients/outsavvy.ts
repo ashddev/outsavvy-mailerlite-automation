@@ -7,7 +7,7 @@ const outSavvyDateSchema = z.object({
   id: z.number().int(),
   timezone: z.string(),
   startlocal: z.iso.datetime(),
-  endLocal: z.iso.datetime(),
+  endlocal: z.iso.datetime(),
   event_date_description: z.string(),
 });
 
@@ -19,7 +19,9 @@ const outSavvyEventSchema = z.object({
   url: z.url(),
   dates: outSavvyDateSchema.array(),
   image_url: z.url(),
-  localtion_name: z.string(),
+  location_name: z.string(),
+  address_1: z.string(),
+  address_town: z.string(),
   price: z.string(),
 });
 
@@ -56,7 +58,7 @@ const paginatedOutsavvyCustomerResponseSchema = z.object({
 });
 
 type OutSavvyCustomer = z.infer<typeof outSavvyCustomerSchema>;
-type OutSavvyEvent = z.infer<typeof outSavvyEventSchema>;
+export type OutSavvyEvent = z.infer<typeof outSavvyEventSchema>;
 
 export const fetchAllCustomers = async (): Promise<OutSavvyCustomer[]> => {
   const PAGE_SIZE = 1000;
