@@ -42,7 +42,10 @@ const sendEmails = async (
           minutes,
         },
       } as const);
-  campaignIds.map((id) => scheduleCampaign(id, scheduleOpts));
+
+  await Promise.all(
+    campaignIds.map((id) => scheduleCampaign(id, scheduleOpts))
+  );
 };
 
 const upcomingEventIfExists = (
