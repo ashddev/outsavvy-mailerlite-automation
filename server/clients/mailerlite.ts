@@ -35,7 +35,7 @@ export const createCampaign = (
         type: "regular",
         emails: [
           {
-            subject: `${
+            subject: `${opts.test ? "TEST-" : ""}${
               opts.reminder
                 ? "Last Chance To Buy Tickets"
                 : "The Sapphic Space UK"
