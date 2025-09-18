@@ -31,7 +31,9 @@ export const createCampaign = (
     "/campaigns",
     {
       body: JSON.stringify({
-        name: `${opts.test ? "TEST" : "SUBSCRIBERS"}:${eventName}`,
+        name: `${opts.test ? "TEST" : "SUBSCRIBERS"}:${eventName}${
+          opts.reminder ? "-REMINDER" : ""
+        }`,
         type: "regular",
         emails: [
           {
