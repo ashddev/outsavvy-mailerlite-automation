@@ -1,4 +1,4 @@
-type EmailVars = {
+type EventContent = {
   event_title: string;
   event_description: string;
   date_display: string;
@@ -7,7 +7,7 @@ type EmailVars = {
   ticket_url: string;
 };
 
-export const generateHtml = (v: EmailVars) => {
+export const generateHtml = (eventContent: EventContent, reminder: boolean) => {
   return `<!DOCTYPE html>
 <html lang="en" dir="ltr" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
@@ -21,7 +21,7 @@ export const generateHtml = (v: EmailVars) => {
     ${generateStyles()}
 
     <meta name="robots" content="noindex, nofollow" />
-    <title>The Sapphic Space UK: ${v.event_title}</title>
+    <title>The Sapphic Space UK: ${eventContent.event_title}</title>
     <meta name="image"
         content="https://storage.mlcdn.com/account_image/1492047/V60r8nTYJRhuTjdYoPE2hJstXx21II3g2NpL7Bl3.jpg"
         property="og:image" />
@@ -41,7 +41,7 @@ export const generateHtml = (v: EmailVars) => {
         color: #ffffff;
         opacity: 0;
       ">
-        The Sapphic Space UK - ${v.event_title}
+        The Sapphic Space UK - ${eventContent.event_title}
     </div>
 
     <div class="document" role="article" aria-roledescription="email" aria-label="The Sapphic Space UK Newsletter"
@@ -123,7 +123,7 @@ export const generateHtml = (v: EmailVars) => {
                                 <table role="presentation" width="640" align="center" border="0" cellspacing="0" cellpadding="0" style="background:#ffffff;">
                                 <tr><td>
                                 <![endif]-->
-                                ${generateTitle(v)}
+                                ${generateTitle(eventContent, reminder)}
                                 <!--[if (gte mso 9)|(IE)]>
                                 </td></tr></table>
                                 <![endif]-->
@@ -133,7 +133,7 @@ export const generateHtml = (v: EmailVars) => {
                                 <table role="presentation" width="640" align="center" border="0" cellspacing="0" cellpadding="0" style="background:#ffffff;">
                                 <tr><td>
                                 <![endif]-->
-                                ${generateHeroAndContent(v)}
+                                ${generateHeroAndContent(eventContent)}
                                 <!--[if (gte mso 9)|(IE)]>
                                     </td></tr></table>
                                 <![endif]-->
@@ -143,7 +143,7 @@ export const generateHtml = (v: EmailVars) => {
                                     <table role="presentation" width="640" align="center" border="0" cellspacing="0" cellpadding="0" style="background:#ffffff;">
                                     <tr><td>
                                 <![endif]-->
-                                ${generateFooter(v)}
+                                ${generateFooter()}
                                 <!--[if (gte mso 9)|(IE)]>
                                 </td></tr></table>
                                 <![endif]-->
@@ -159,7 +159,7 @@ export const generateHtml = (v: EmailVars) => {
 </html>`;
 };
 
-const generateFooter = (v: EmailVars) => {
+const generateFooter = () => {
   return `<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background: #ffffff">
     <tr>
         <td>
@@ -294,7 +294,7 @@ const generateFooter = (v: EmailVars) => {
 </table>`;
 };
 
-const generateHeroAndContent = (v: EmailVars) => {
+const generateHeroAndContent = (eventContent: EventContent) => {
   return `<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background: #ffffff">
     <tr>
         <td>
@@ -317,7 +317,7 @@ const generateHeroAndContent = (v: EmailVars) => {
                                         cellpadding="0">
                                         <tr>
                                             <td class="row px-50" align="center" colspan="3">
-                                                <img src="${v.hero_url}" loading="lazy" border="0" alt="hero"
+                                                <img src="${eventContent.hero_url}" loading="lazy" border="0" alt="hero"
                                                     class="img" width="540" style="display: block" />
                                             </td>
                                         </tr>
@@ -337,7 +337,7 @@ const generateHeroAndContent = (v: EmailVars) => {
                                                                 line-height: 175%
                                                                 text-align: center;
                                                             ">
-                                                                ${v.event_description}
+                                                                ${eventContent.event_description}
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -411,7 +411,7 @@ const generateHeroAndContent = (v: EmailVars) => {
                                                               -webkit-font-smoothing: auto;
                                                               word-break: break-all;
                                                             ">
-                                                                                    <a href="${v.ticket_url}"
+                                                                                    <a href="${eventContent.ticket_url}"
                                                                                         target="_blank"
                                                                                         rel="noopener noreferrer"
                                                                                         aria-label="Get your ticket on Outsavvy"
@@ -463,7 +463,7 @@ const generateHeroAndContent = (v: EmailVars) => {
 </table>`;
 };
 
-const generateTitle = (v: EmailVars) => {
+const generateTitle = (eventContent: EventContent, reminder: boolean) => {
   return `<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background: #ffffff">
     <tr>
         <td>
@@ -486,7 +486,11 @@ const generateTitle = (v: EmailVars) => {
                                   margin-bottom: 10px;
                                   text-align: center;
                                 ">
-                            <em>📍${v.location_display}</em>
+                            <em>${
+                              reminder
+                                ? "Last Change To Buy Tickets!"
+                                : eventContent.location_display
+                            }</em>
                         </h3>
                         <h1 class="m-title" style="
                                   color: #000000;
@@ -498,7 +502,7 @@ const generateTitle = (v: EmailVars) => {
                                   margin-bottom: 10px;
                                   text-align: center;
                                 ">
-                            ${v.event_title}
+                            ${eventContent.event_title}
                         </h1>
                         <p style="
                                   color: #515856;
@@ -508,7 +512,7 @@ const generateTitle = (v: EmailVars) => {
                                   margin-bottom: 0;
                                   text-align: center;
                                 ">
-                            <strong>${v.date_display}</strong>
+                            <strong>${eventContent.date_display}</strong>
                         </p>
                     </td>
                 </tr>

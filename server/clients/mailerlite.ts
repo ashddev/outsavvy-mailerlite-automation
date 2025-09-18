@@ -24,35 +24,41 @@ export const batchRequest = (requests: Array<BatchRequest>) =>
 
 export const createCampaign = (
   event: OutSavvyEvent,
-  groupId: string,
-  test: boolean
+  opts: { groupId: string; test: boolean; reminder: boolean }
 ) => {
   const eventName = stripEmojisAndWhitespace(event.name);
   return mailerlite<{ data: Record<"id" | (string & {}), string> }>(
     "/campaigns",
     {
       body: JSON.stringify({
-        name: `${test ? "TEST" : "SUBSCRIBERS"}:${eventName}`,
+        name: `${opts.test ? "TEST" : "SUBSCRIBERS"}:${eventName}`,
         type: "regular",
         emails: [
           {
-            subject: `The Sapphic Space UK: ${eventName}`,
+            subject: `${
+              opts.reminder
+                ? "Last Chance To Buy Tickets"
+                : "The Sapphic Space UK"
+            }: ${eventName}`,
             from_name: "The Sapphic Space UK",
             from: "general@thesapphicspace.co.uk",
-            content: generateHtml({
-              event_title: eventName,
-              event_description: stripLinks(event.description),
-              date_display: formatEventDate(
-                event.dates[0].startlocal,
-                event.dates[0].endlocal
-              ),
-              location_display: `${event.location_name}, ${event.address_1}, ${event.address_town}`,
-              hero_url: event.image_url,
-              ticket_url: event.url,
-            }),
+            content: generateHtml(
+              {
+                event_title: eventName,
+                event_description: stripLinks(event.description),
+                date_display: formatEventDate(
+                  event.dates[0].startlocal,
+                  event.dates[0].endlocal
+                ),
+                location_display: `${event.location_name}, ${event.address_1}, ${event.address_town}`,
+                hero_url: event.image_url,
+                ticket_url: event.url,
+              },
+              opts.reminder
+            ),
           },
         ],
-        groups: [groupId],
+        groups: [opts.groupId],
       }),
     }
   );
