@@ -488,7 +488,7 @@ const generateTitle = (eventContent: EventContent, reminder: boolean) => {
                                 ">
                             <em>${
                               reminder
-                                ? "Last Change To Buy Tickets!"
+                                ? "Last Chance To Buy Tickets!"
                                 : eventContent.location_display
                             }</em>
                         </h3>
