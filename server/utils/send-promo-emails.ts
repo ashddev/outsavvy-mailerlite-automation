@@ -12,15 +12,15 @@ export const sendPromoEmails = async () => {
     { daysBeforeEvent: 2, reminder: true },
   ];
 
-  await Promise.all([
+  await Promise.all(
     promos.map((promo) =>
       createEmailPromo(events, {
         today,
         daysBeforeEvent: promo.daysBeforeEvent,
         reminder: promo.reminder,
       })
-    ),
-  ]);
+    )
+  );
 };
 
 const createEmailPromo = async (
