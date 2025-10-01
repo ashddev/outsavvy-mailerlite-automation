@@ -9,7 +9,7 @@ export const sendPromoEmails = async () => {
 
   const promos: Array<PromoEmail> = [
     { daysBeforeEvent: 7, reminder: false },
-    { daysBeforeEvent: 2, reminder: true },
+    { daysBeforeEvent: 3, reminder: true },
   ];
 
   await Promise.all(

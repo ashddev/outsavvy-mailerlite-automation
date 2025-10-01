@@ -197,9 +197,9 @@ const generateFooter = () => {
                                         line-height: 150%;
                                         margin-bottom: 6px;
                                       ">
-                                        Lytchett House, 13 Freeland Park, Wareham
-                                        Road, Poole, Dorset, BH16 6FA, United
-                                        Kingdom
+                                        Lytchett House, 13 Freeland Park, Wareham Road, BH16 6FA, United Kingdom.\n
+                                        The Sapphic Space CIC is a registered Community Interest Company in England and Wales.\n
+                                        Company number: 16736619
                                     </p>
 
                                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
