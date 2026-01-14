@@ -1,3 +1,5 @@
+import z from "zod";
+
 const mailerlite = $fetch.create({
   baseURL: "https://connect.mailerlite.com/api",
   method: "POST",
@@ -31,9 +33,10 @@ export const createCampaign = (
     "/campaigns",
     {
       body: JSON.stringify({
-        name: `${opts.test ? "TEST" : "SUBSCRIBERS"}:${eventName}${
-          opts.reminder ? "-REMINDER" : ""
-        }`,
+        name: `${opts.test ? "TEST" : "SUBSCRIBERS"}
+        :${eventName.replaceAll(" ", "")}
+        ${opts.reminder ? ":REMINDER" : ""}
+        :${event.id}`,
         type: "regular",
         emails: [
           {
@@ -80,3 +83,43 @@ export const scheduleCampaign = (campaignId: string, opts: ScheduleOpts) =>
   mailerlite(`/campaigns/${campaignId}/schedule`, {
     body: JSON.stringify(opts),
   });
+
+const campaignSchema = z.object({
+  data: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      finished_at: z.coerce.date(),
+    })
+    .array(),
+});
+export const getSentCampaigns = () =>
+  mailerlite("/campaigns", {
+    method: "GET",
+    query: {
+      filter: {
+        status: "sent",
+      },
+      limit: 100,
+    },
+  })
+    .then((response) => campaignSchema.parse(response))
+    .then((response) => response.data);
+
+const campaignClicksSchema = z
+  .object({
+    data: z
+      .object({
+        subscriber: z.object({ email: z.email() }),
+      })
+      .array(),
+  })
+  .transform((data) => data.data.map((click) => click.subscriber.email));
+export const getEmailsOfSubscribersWhoClicked = (campaignId: string) =>
+  mailerlite(`/campaigns/${campaignId}/reports/subscriber-activity`, {
+    method: "GET",
+    query: {
+      "filter[type]": "clicked",
+      include: "subscriber",
+    },
+  }).then((response) => campaignClicksSchema.parse(response));

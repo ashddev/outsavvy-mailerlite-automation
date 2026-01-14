@@ -1,7 +1,17 @@
 import z from "zod";
 
-const OUTSAVVY_ACCESS_TOKEN = process.env.OUTSAVVY_ACCESS_TOKEN;
-const outsavvyHeaders = { Authorization: `Partner ${OUTSAVVY_ACCESS_TOKEN}` };
+const PAGE_SIZE = 1000;
+const outsavvy = $fetch.create({
+  baseURL: "https://api.outsavvy.com/v1",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Partner ${process.env.OUTSAVVY_ACCESS_TOKEN ?? ""}`,
+  },
+  query: {
+    page_size: PAGE_SIZE,
+  },
+  onRequestError: (error) => console.error(error),
+});
 
 const outSavvyDateSchema = z.object({
   id: z.number().int(),
@@ -60,31 +70,28 @@ const paginatedOutsavvyCustomerResponseSchema = z.object({
 type OutSavvyCustomer = z.infer<typeof outSavvyCustomerSchema>;
 export type OutSavvyEvent = z.infer<typeof outSavvyEventSchema>;
 
-export const fetchAllCustomers = async (): Promise<OutSavvyCustomer[]> => {
-  const PAGE_SIZE = 1000;
-  const outSavvyCustomerResponse = await fetch(
-    `https://api.outsavvy.com/v1/customers?page_size=${PAGE_SIZE}`,
-    { headers: outsavvyHeaders }
-  )
-    .then((response) => response.json())
-    .then((jsonResponse) =>
-      paginatedOutsavvyCustomerResponseSchema.parse(jsonResponse)
-    )
-    .catch((error) => console.error(error));
-
+export const getAllCustomers = async (): Promise<OutSavvyCustomer[]> => {
+  const outSavvyCustomerResponse = await outsavvy("/customers", {}).then(
+    (response) => paginatedOutsavvyCustomerResponseSchema.parse(response)
+  );
   return outSavvyCustomerResponse ? outSavvyCustomerResponse.list : [];
 };
 
-export const fetchLiveEvents = async (): Promise<OutSavvyEvent[]> => {
-  const outsavvyEventsApiResponse = await fetch(
-    `https://api.outsavvy.com/v1/events/search`,
-    { headers: outsavvyHeaders }
-  )
-    .then((response) => response.json())
-    .then((jsonResponse) =>
-      paginatedOutsavvyEventResponseSchema.parse(jsonResponse)
-    )
-    .catch((error) => console.error(error));
-
+export const getLiveEvents = async (): Promise<OutSavvyEvent[]> => {
+  const outsavvyEventsApiResponse = await outsavvy("/events/search").then(
+    (response) => paginatedOutsavvyEventResponseSchema.parse(response)
+  );
   return outsavvyEventsApiResponse ? outsavvyEventsApiResponse.events : [];
 };
+
+const priceSchema = z.object({
+  currency: z.string().length(3),
+  value: z.number(),
+});
+const orderSchema = z.object({
+  list: z.array(z.object({ email: z.email(), price: priceSchema })),
+});
+export const getOrders = (eventId: string) =>
+  outsavvy(`/events/${eventId}/orders`)
+    .then((response) => orderSchema.parse(response))
+    .then((response) => response.list);
