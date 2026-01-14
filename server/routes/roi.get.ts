@@ -16,7 +16,7 @@ export default eventHandler(async (event) => {
   let totalMailingListRevenue = 0;
   for (const campaign of incomeProducingCampaigns) {
     const emails = await getEmailsOfSubscribersWhoClicked(campaign.id);
-    const campaignId = campaign.name.split(":").slice(-1)[0];
+    const campaignId = campaign.name.split("/").slice(-1)[0];
     if (!/^\d+$/.test(campaignId)) continue;
 
     const orders = await getOrders(campaignId);
