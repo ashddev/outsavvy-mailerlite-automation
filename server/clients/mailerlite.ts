@@ -33,18 +33,17 @@ export const createCampaign = (
     "/campaigns",
     {
       body: JSON.stringify({
-        name: `${opts.test ? "TEST" : "SUBSCRIBERS"}
-        :${eventName.replaceAll(" ", "")}
-        ${opts.reminder ? ":REMINDER" : ""}
-        :${event.id}`,
+        name: `${opts.test ? "TEST" : "SUBSCRIBERS"}/${eventName}${
+          opts.reminder ? "/REMINDER" : ""
+        }/${event.id}`,
         type: "regular",
         emails: [
           {
             subject: `${opts.test ? "TEST-" : ""}${
               opts.reminder
-                ? "Last Chance To Buy Tickets"
-                : "The Sapphic Space UK"
-            }: ${eventName}`,
+                ? "Tickets still available 🎟️ "
+                : "Join us next week 🌟 "
+            }${eventName}`,
             from_name: "The Sapphic Space UK",
             from: "general@thesapphicspace.co.uk",
             content: generateHtml(
