@@ -1,5 +1,5 @@
-export const fetchAllOptedInCustomers = async () => {
-  const customers = await fetchAllCustomers();
+export const getAllOptedInCustomers = async () => {
+  const customers = await getAllCustomers();
   return customers
     ? customers.filter(
         (customer) => customer.can_email && customer.customer_email
@@ -8,7 +8,7 @@ export const fetchAllOptedInCustomers = async () => {
 };
 
 export const syncSubscribers = async () => {
-  const customers = await fetchAllOptedInCustomers();
+  const customers = await getAllOptedInCustomers();
   const MAX_REQUESTS = 50;
 
   const MAILERLITE_GROUP_ID = process.env.MAILERLITE_GROUP_ID ?? "";

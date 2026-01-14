@@ -4,7 +4,7 @@ type PromoEmail = {
 };
 
 export const sendPromoEmails = async () => {
-  const events = await fetchLiveEvents();
+  const events = await getLiveEvents();
   const today = new Date();
 
   const promos: Array<PromoEmail> = [
