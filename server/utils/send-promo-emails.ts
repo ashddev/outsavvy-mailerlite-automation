@@ -108,6 +108,8 @@ const upcomingEventIfExists = (
 
   return events.filter((e) => {
     const start = new Date(e.dates[0].startlocal);
-    return start.toISOString().slice(0, 10) === targetYmd;
+    return (
+      start.toISOString().slice(0, 10) === targetYmd && e.price !== "Sold Out"
+    );
   });
 };
