@@ -1,14 +1,11 @@
 import emojiRegex from "emoji-regex";
-import * as cheerio from "cheerio";
 
 export function stripEmojisAndWhitespace(s: string): string {
   return s.replace(emojiRegex(), "").trim();
 }
 
 export function stripLinks(html: string): string {
-  const $ = cheerio.load(html);
-  $("a").remove();
-  return $.html();
+  return html.replace(/<a\b[^>]*>[\s\S]*?<\/a>/gi, "");
 }
 
 export function formatEventDate(startIso: string, endIso?: string): string {
