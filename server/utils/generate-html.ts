@@ -356,7 +356,7 @@ const generateHeroAndContent = (eventContent: EventContent) => {
                                                         <v:roundrect
                                                           xmlns:v="urn:schemas-microsoft-com:vml"
                                                           xmlns:w="urn:schemas-microsoft-com:office:word"
-                                                          href="https://www.outsavvy.com/event/29396/the-gaylidh"
+                                                          href="${eventContent.ticket_url}"
                                                           target="_blank"
                                                           style="
                                                             width: 165px;
